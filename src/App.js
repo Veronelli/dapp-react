@@ -1,25 +1,36 @@
-import logo from './logo.svg';
+import React,{ Component } from 'react';
 import './App.css';
+import Web3 from 'web3'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+export default class App extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {account:''};
+  }
+
+  async componentDidMount(){
+    await window.ethereum.enable();
+    this.loadBlockchainData();
+  }
+
+  async loadBlockchainData(){
+    let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+    const network = await web3.eth.net.getNetworkType();
+    const account = await web3.eth.getAccounts();
+    this.setState({account:account[0]})
+    console.log(account)
+  }
+
+  render(){
+    return(
+      <div>
+        <h1>Hello,World</h1>
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Your Account is:
+          {this.state.account}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+      </div>
+    )
+  }
 }
-
-export default App;
